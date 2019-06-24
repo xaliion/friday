@@ -1,7 +1,7 @@
-import db
 import locale
 from telebot import types
 from threading import Timer
+import database_core as db_core
 from datetime import datetime, date, time
 
 
@@ -28,25 +28,18 @@ def create_inline_keyboard(list_purchase):
 
 
 def write_purchase(string_purchase, chat_id):
-    cursor, connection = db.connect()
-    sql_request = "INSERT INTO purchase VALUES (?, ?);"
-    cursor.execute(sql_request, (string_purchase, chat_id))
-    connection.commit()
+    db_core.write(to_table='purchase', values=(string_purchase, chat_id))
 
 
 def read_purchase(chat_id):
-    cursor, connection = db.connect()
-    sql_request = "SELECT purchase_list FROM purchase WHERE id=?"
-    cursor.execute(sql_request, (chat_id, ))
-    sql_response = cursor.fetchall()
-    return str(sql_response[0][0])
+    purchase_list = db_core.read(columns='purchase_list', from_table='purchase',
+                                 key='id', value=chat_id)
+    return purchase_list[0][0]
 
 
 def update_purchase(string_purchase, chat_id):
-    cursor, connection = db.connect()
-    sql_request = "UPDATE purchase SET purchase_list=? WHERE id=?"
-    cursor.execute(sql_request, (string_purchase, chat_id))
-    connection.commit()
+    db_core.update(to_table='purchase', column='purchase_list', data=string_purchase,
+                   key='id', value=chat_id)
 
 
 def get_datetime_reminder(string_time_reminder, string_date_reminder):

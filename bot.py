@@ -1,4 +1,3 @@
-import db
 import json
 import loger
 import apiai
@@ -58,12 +57,12 @@ def response_to_user(message):
         # Достаём список покупок от пользователя
         parameters_list = response_json['result']['parameters']
         # Записываем его в бд
-        list_control.write_list(parameters_list['list'][0], chat_id)
+        list_control.write_purchase(parameters_list['list'][0], chat_id)
         # Считываем из бд
-        shop_list = list_control.read_list(chat_id)
+        shop_list = list_control.read_purchase(chat_id)
         # Создаем список из строки
-        shop_list = list_control.make_shop_list(shop_list)
-        markup = list_control.create_buttons(shop_list)
+        shop_list = list_control.make_list_purchase(shop_list)
+        markup = list_control.create_inline_keyboard(shop_list)
         bot.send_message(chat_id, 'Записала. Вот список', reply_markup=markup)
 
     # Создаем напоминание
@@ -87,10 +86,10 @@ def response_to_user(message):
 def delete_button_from_list(query):
     chat_id = query.message.chat.id
     # Получаем список из бд
-    bd_shop_list = list_control.read_list(chat_id)
-    shop_list = list_control.make_shop_list(bd_shop_list)
+    bd_shop_list = list_control.read_purchase(chat_id)
+    shop_list = list_control.make_list_purchase(bd_shop_list)
     # Создаём список из кнопок
-    markup = list_control.create_buttons(shop_list)
+    markup = list_control.create_inline_keyboard(shop_list)
 
     # Удаляем кнопку
     for button in markup.keyboard:
@@ -98,8 +97,8 @@ def delete_button_from_list(query):
             index_for_remove = markup.keyboard.index(button)
             del markup.keyboard[index_for_remove]
             shop_list.remove(button[0]['text'])
-            shop_list_string = list_control.make_shop_string(shop_list)
-            list_control.update_list(shop_list_string, chat_id)
+            shop_list_string = list_control.make_string_purchase(shop_list)
+            list_control.update_purchase(shop_list_string, chat_id)
 
     # Если список пустой – удаляем сообщение с ним
     if not markup.keyboard:

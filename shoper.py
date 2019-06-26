@@ -59,3 +59,8 @@ def edit_purchase(query, chat_id):
             purchase_string = list_controller.make_purchase_string(purchase_list)
             list_controller.update_purchase(purchase_string, chat_id)
     return inline_keyboard
+
+
+def delete_purchase(bot, chat_id, query):
+    list_controller.delete_purchase(chat_id)
+    bot.delete_message(chat_id, query.message.message_id)

@@ -2,5 +2,6 @@ import sqlite3
 
 
 def connect():
-    connection, cursor = sqlite3.connect('../friday.bd')
+    connection = sqlite3.connect('friday.db')
+    cursor = connection.cursor()
     return (connection, cursor)

@@ -55,6 +55,13 @@ def update_purchase(purchase_string, chat_id):
     connection.commit()
 
 
+def delete_purchase(chat_id):
+    connection, cursor = db_connect.connect()
+    sql_request = 'DELETE FROM purchase WHERE id=?;'
+    cursor.execute(sql_request, (chat_id,))
+    connection.commit()
+
+
 def get_datetime_reminder(string_time_reminder, string_date_reminder):
     def calculating_date_reminder():
         if string_date_reminder == '':

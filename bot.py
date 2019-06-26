@@ -69,9 +69,9 @@ def delete_button_from_list(query):
 
     inline_keyboard = shoper.edit_purchase(query, chat_id)
 
-    # Если список пустой – удаляем сообщение с ним
+    # Если список пустой – удаляем список
     if not inline_keyboard.keyboard:
-        bot.delete_message(chat_id, query.message.message_id)
+        shoper.delete_purchase(bot, chat_id, query)
     # Если не пустой, обновляем сообщение с ним
     else:
         bot.edit_message_reply_markup(chat_id, query.message.message_id,

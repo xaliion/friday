@@ -9,7 +9,11 @@ log_file = logging.FileHandler("history_work.log")
 loger.addHandler(log_file)
 
 
-def write_info(proxy):
+def get_loger():
+    return loger
+
+
+def write_proxy_info(proxy):
     # Проверяем, что прокси пришёл в полном формате
     try:
         loger.info('IP: {ip}; Порт: {port}; Страна: {country};'.format(ip=proxy['ip'],
@@ -18,21 +22,18 @@ def write_info(proxy):
     # Если прокси не в полном формате
     # значит бот попал в бан и использует резервный прокси из файла
     except KeyError:
-        loger.error('Прокси не пришел\n')
+        loger.error('Прокси не пришел\nИспользую резервный прокси')
 
 
-def write_error(description_error):
+def write_proxy_error(description_error):
     loger.error('Прокси отвалился с ошибкой {error}\n'.format(error=description_error))
 
 
 def check_log_size():
-    # Проверяем размер файла
-    # Если он больше или равен 1 Мб или же 1 048 576 байт, то удаляем лог
+    # Если файл больше или равен 1 Мб, то удаляем лог
     if (getsize('history_work.log') >= 1048576):
-        # Запускаем процесс для удаления файла
         run(['rm', 'history_work.log'])
         loger.info('Чистка лога\n')
 
 
-# Проверяем файл при каждой загрузке модуля
 check_log_size()

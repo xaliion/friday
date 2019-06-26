@@ -1,7 +1,7 @@
 import locale
 from telebot import types
 from threading import Timer
-import database_core as db_core
+from core import database_connector as db_connect
 from datetime import datetime, date, time
 
 
@@ -9,37 +9,50 @@ from datetime import datetime, date, time
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
 
-def make_list_purchase(string_purchase):
-    list_purchase = string_purchase.split(', ')
-    return list_purchase
+def make_purchase_list(purchase_string):
+    purchase_list = purchase_string.split(', ')
+    return purchase_list
 
 
-def make_string_purchase(list_purchase):
-    string_purchase = ', '.join(list_purchase)
-    return string_purchase
+def make_purchase_string(purchase_list):
+    purchase_string = ', '.join(purchase_list)
+    return purchase_string
 
 
-def create_inline_keyboard(list_purchase):
+def make_firstletter_capital(purchase_string):
+    purchase_list = make_purchase_list(purchase_string)
+    for item_index in range(len(purchase_list)):
+        purchase_list[item_index] = purchase_list[item_index].capitalize()
+    return make_purchase_string(purchase_list)
+
+
+def create_inline_keyboard(purchase_list):
     inline_keyboard = types.InlineKeyboardMarkup()
-    for item in list_purchase:
+    for item in purchase_list:
         button = types.InlineKeyboardButton(item, callback_data=item)
         inline_keyboard.add(button)
     return inline_keyboard
 
 
-def write_purchase(string_purchase, chat_id):
-    db_core.write(to_table='purchase', values=(string_purchase, chat_id))
+def write_purchase(purchase_string, chat_id):
+    connection, cursor = db_connect.connect()
+    sql_request = 'INSERT INTO purchase VALUES (?, ?);'
+    cursor.execute(sql_request, (purchase_string, chat_id))
+    connection.commit()
 
 
 def read_purchase(chat_id):
-    purchase_list = db_core.read(columns='purchase_list', from_table='purchase',
-                                 key='id', value=chat_id)
-    return purchase_list[0][0]
+    connection, cursor = db_connect.connect()
+    sql_request = 'SELECT purchase_list FROM purchase WHERE id=?;'
+    cursor.execute(sql_request, (chat_id,))
+    return cursor.fetchall()[0][0]
 
 
-def update_purchase(string_purchase, chat_id):
-    db_core.update(to_table='purchase', column='purchase_list', data=string_purchase,
-                   key='id', value=chat_id)
+def update_purchase(purchase_string, chat_id):
+    connection, cursor = db_connect.connect()
+    sql_request = 'UPDATE purchase SET purchase_list=? WHERE id=?;'
+    cursor.execute(sql_request, (purchase_string, chat_id))
+    connection.commit()
 
 
 def get_datetime_reminder(string_time_reminder, string_date_reminder):
@@ -67,29 +80,28 @@ def get_message_time_reminder(string_datetime_reminder):
         return to_recap_message
 
 
-def get_timedelta(string_datetime_reminder):
-    datetime_reminder = datetime.fromisoformat(string_datetime_reminder)
-
+def get_timedelta(datetime_reminder):
     datetime_now = datetime.now()
     delta = datetime_reminder - datetime_now
     return delta.seconds
 
 
-def set_reminder(datetime_reminder, bot, chat_id):
+def set_reminder(string_datetime_reminder, bot, chat_id):
     def remind(delay=False):
-        cursor, connection = db.connect()
-        sql_request = "DELETE FROM reminder_purchase WHERE id=?;"
-        cursor.execute(sql_request, (chat_id, ))
-        connection.commit()
-
-        purchase_list = make_list_purchase(read_purchase(chat_id))
+        purchase_list = make_purchase_list(read_purchase(chat_id))
         inline_keyboard = create_inline_keyboard(purchase_list)
         bot.send_message(chat_id, 'Ты просил напомнить про покупки.\rВот список',
                          reply_markup=inline_keyboard)
 
+        connection, cursor = db_connect.connect()
+        sql_request = 'DELETE FROM reminder_purchase WHERE id=?;'
+        cursor.execute(sql_request, (chat_id,))
+        connection.commit()
+
         if delay is False:
             timer.cancel()
 
+    datetime_reminder = datetime.fromisoformat(string_datetime_reminder)
     if datetime_reminder < datetime.now():
         remind(delay=True)
     else:
@@ -98,23 +110,15 @@ def set_reminder(datetime_reminder, bot, chat_id):
         timer.start()
 
 
-def write_datetime_notify(datetime_notify, chat_id):
-    cursor, connection = db.connect()
-    sql_request = "INSERT INTO shoplist_timer VALUES (?, ?);"
-    cursor.execute(sql_request, (str(datetime_notify), chat_id))
+def write_data_reminder(string_datetime_reminder, chat_id):
+    connection, cursor = db_connect.connect()
+    sql_request = 'INSERT INTO reminder_purchase VALUES (?, ?);'
+    cursor.execute(sql_request, (string_datetime_reminder, chat_id))
     connection.commit()
 
 
-def read_data_timer():
-    cursor, connection = db.connect()
-    sql_request = "SELECT * FROM shoplist_timer;"
+def read_data_reminder():
+    connection, cursor = db_connect.connect()
+    sql_request = 'SELECT * FROM reminder_purchase;'
     cursor.execute(sql_request)
-    sql_response = cursor.fetchall()
-    return sql_response
-
-
-def reboot_timer(bot):
-    data_timer = read_data_timer()
-    for data in data_timer:
-        datetime_notify = datetime.fromisoformat(data[0])
-        set_notify(datetime_notify, bot, data[1])
+    return cursor.fetchall()

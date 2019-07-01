@@ -85,7 +85,7 @@ try:
 # Если прокси отваливается
 except OSError as e:
     bot.stop_polling()
-    loger.write_error(type(e).__name__)
+    loger.write_proxy_error(type(e).__name__)
 
     # Ждём пять секунд, чтобы не словить бан за слишком частые запросы
     sleep(5)
@@ -93,5 +93,5 @@ except OSError as e:
     tb.apihelper.proxy = {'https': 'https://{ip}:{port}'.format(ip=proxy['ip'], port=proxy['port'])}
     proxy_changer.write_proxy(proxy)
 
-    loger.write_info(proxy)
+    loger.write_proxy_info(proxy)
     bot.polling()

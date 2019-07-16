@@ -49,6 +49,7 @@ def response_to_user(message):
         shoper.save_purchase(purchase_string, chat_id)
         inline_keyboard = shoper.create_inline_keyboard(purchase_string)
         bot.send_message(chat_id, 'Записала.\r\nВот список', reply_markup=inline_keyboard)
+
     # Создаем напоминание
     elif action == 'create_list.purchase_list.reminder':
         datetime_remind_from_ai = response_json['result']['parameters']
@@ -57,7 +58,8 @@ def response_to_user(message):
         else:
             datetime_reminder = shoper.create_reminder(datetime_remind_from_ai, chat_id)
             message_to_recap = shoper.set_reminder(datetime_reminder, bot, chat_id)
-            bot.send_message(chat_id, message_to_recap)
+            bot.send_message(chat_id, message_to_recap)\
+
     # Ответ бота на любые другие вопросы
     else:
         bot.send_message(chat_id, response_from_ai)
@@ -66,7 +68,6 @@ def response_to_user(message):
 @bot.callback_query_handler(lambda query: True)
 def delete_button_from_list(query):
     chat_id = query.message.chat.id
-
     inline_keyboard = shoper.edit_purchase(query, chat_id)
 
     # Если список пустой – удаляем список
@@ -90,7 +91,8 @@ except OSError as e:
     # Ждём пять секунд, чтобы не словить бан за слишком частые запросы
     sleep(5)
     proxy = proxy_changer.get_proxy()
-    tb.apihelper.proxy = {'https': 'https://{ip}:{port}'.format(ip=proxy['ip'], port=proxy['port'])}
+    tb.apihelper.proxy = {'https': 'https://{ip}:{port}'.format(ip=proxy['ip'],
+                                                                port=proxy['port'])}
     proxy_changer.write_proxy(proxy)
 
     loger.write_proxy_info(proxy)

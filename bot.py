@@ -7,9 +7,9 @@ from core import loger, proxy_changer
 
 
 working_proxy = proxy_changer.read_proxy()
+bot = tb.TeleBot('866766786:AAFCv_DZQGF884qEKImJj7rpg5D2cqGHmhw', threaded=False)
 tb.apihelper.proxy = {'https': 'https://{ip}:{port}'.format(ip=working_proxy['ip'],
                                                             port=working_proxy['port'])}
-bot = tb.TeleBot('866766786:AAFCv_DZQGF884qEKImJj7rpg5D2cqGHmhw', threaded=False)
 
 # Если бот падал, то восстанавливаем таймер
 try:
@@ -21,9 +21,8 @@ except IndexError:
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    about_me = '''Привет.
-Я помогу со списком покупок, но пока что я не могу работать с несколькими списками.
-Попроси меня сделать список или пойти в магазин'''
+    about_me = 'Привет.\r\n' \
+               'Я помогу со списком покупок, попроси меня сделать список или пойти в магазин'
     bot.send_message(message.chat.id, about_me)
 
 
@@ -41,7 +40,10 @@ def response_to_user(message):
     action = response_json['result']['action']
 
     # Создаем список покупок
-    if action == 'create_list.purchase_list':
+    if action == 'purchase_name':
+        list_name = response_json['result']['parameters']['list_name']
+        bot.send_message(chat_id, f'Назову список {list_name}\r\nЧто будем покупать?')
+    elif action == 'purchase_list':
         # Достаём список покупок от пользователя
         purchase_list_from_ai = response_json['result']['parameters']['list'][0]
         purchase_string = shoper.create_purchase(purchase_list_from_ai)
@@ -50,8 +52,9 @@ def response_to_user(message):
         inline_keyboard = shoper.create_inline_keyboard(purchase_string)
         bot.send_message(chat_id, 'Записала.\r\nВот список', reply_markup=inline_keyboard)
     # Создаем напоминание
-    elif action == 'create_list.purchase_list.reminder':
+    elif action == 'purchase_reminder':
         datetime_remind_from_ai = response_json['result']['parameters']
+        print(datetime_remind_from_ai)
         if not datetime_remind_from_ai['time']:
             bot.send_message(chat_id, 'Не могу прочитать время')
         else:

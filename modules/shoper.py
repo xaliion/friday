@@ -6,6 +6,10 @@ def create_purchase(purchase_list_from_ai):
     return purchase_string
 
 
+def save_purchase_name(purchase_name):
+    list_controller.write_purchase_name(purchase_name)
+
+
 def save_purchase(purchase_string, chat_id):
     list_controller.write_purchase(purchase_string, chat_id)
 

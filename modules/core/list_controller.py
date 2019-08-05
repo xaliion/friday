@@ -34,17 +34,24 @@ def create_inline_keyboard(purchase_list):
     return inline_keyboard
 
 
-def write_purchase(purchase_name, purchase_string, chat_id):
+def write_purchase_name(purchase_name):
     connection, cursor = db.connect()
-    sql_request = 'INSERT INTO purchase VALUES (?, ?, ?);'
-    cursor.execute(sql_request, (purchase_name, purchase_string, chat_id))
+    sql_request = 'INSERT INTO purchase (purchase_name) VALUES (?)'
+    cursor.execute(sql_request, (purchase_name, ))
+    connection.commit()
+
+
+def write_purchase(purchase_string, chat_id):
+    connection, cursor = db.connect()
+    sql_request = 'INSERT INTO purchase (purchase_list, id) VALUES (?, ?);'
+    cursor.execute(sql_request, (purchase_string, chat_id))
     connection.commit()
 
 
 def read_purchase(chat_id):
     connection, cursor = db.connect()
     sql_request = 'SELECT purchase_list FROM purchase WHERE id=?;'
-    cursor.execute(sql_request, (chat_id,))
+    cursor.execute(sql_request, (chat_id, ))
     return cursor.fetchall()[0][0]
 
 

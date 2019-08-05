@@ -1,11 +1,11 @@
 import json
 import requests
-from core import database_connector as db_connect
+from core import db
 
 
 def get_proxy():
     def get_cache_proxy():
-        connection, cursor = db_connect.connect()
+        connection, cursor = db.connect()
         sql_request = "SELECT TOP 1 * FROM cache_proxy;"
         cursor.execute(sql_request)
         sql_response = cursor.fetchall()
@@ -38,7 +38,7 @@ def get_proxy():
 
 
 def write_proxy(proxy):
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = "UPDATE proxy SET ip=?, port=?, country=? WHERE id=0;"
     cursor.execute(sql_request, (proxy['ip'], proxy['port'],
                                  proxy['country']))
@@ -50,7 +50,7 @@ def write_proxy(proxy):
 
 
 def read_proxy():
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = 'SELECT ip, port FROM proxy'
     cursor.execute(sql_request)
     sql_response = cursor.fetchall()
@@ -62,7 +62,7 @@ def read_proxy():
 
 
 def check_size_cached_proxy():
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = "SELECT COUNT(ip) FROM cache_proxy;"
     cursor.execute(sql_request)
     sql_response = cursor.fetchall()

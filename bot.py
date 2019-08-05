@@ -4,6 +4,7 @@ import shoper
 import telebot as tb
 from time import sleep
 from core import loger, proxy_changer
+from core import database_connector as db_connect
 
 
 working_proxy = proxy_changer.read_proxy()
@@ -43,6 +44,9 @@ def response_to_user(message):
     if action == 'purchase_name':
         list_name = response_json['result']['parameters']['list_name']
         bot.send_message(chat_id, f'Назову список {list_name}\r\nЧто будем покупать?')
+        connection, cursor = db_connect.connect()
+        sql_request = 'INSERT INTO purchase(purchase_name) VALUES (?);'
+        cursor.execute(sql_request, (list_name,))
     elif action == 'purchase_list':
         # Достаём список покупок от пользователя
         purchase_list_from_ai = response_json['result']['parameters']['list'][0]
@@ -93,7 +97,6 @@ except OSError as e:
     # Ждём пять секунд, чтобы не словить бан за слишком частые запросы
     sleep(5)
     proxy = proxy_changer.get_proxy()
-    tb.apihelper.proxy = {'https': 'https://{ip}:{port}'.format(ip=proxy['ip'], port=proxy['port'])}
     proxy_changer.write_proxy(proxy)
 
     loger.write_proxy_info(proxy)

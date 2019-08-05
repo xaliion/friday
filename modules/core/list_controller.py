@@ -1,7 +1,7 @@
+import db
 import locale
 from telebot import types
 from threading import Timer
-from core import database_connector as db_connect
 from datetime import datetime, date, time
 
 
@@ -35,28 +35,28 @@ def create_inline_keyboard(purchase_list):
 
 
 def write_purchase(purchase_name, purchase_string, chat_id):
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = 'INSERT INTO purchase VALUES (?, ?, ?);'
     cursor.execute(sql_request, (purchase_name, purchase_string, chat_id))
     connection.commit()
 
 
 def read_purchase(chat_id):
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = 'SELECT purchase_list FROM purchase WHERE id=?;'
     cursor.execute(sql_request, (chat_id,))
     return cursor.fetchall()[0][0]
 
 
 def update_purchase(purchase_string, chat_id):
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = 'UPDATE purchase SET purchase_list=? WHERE id=?;'
     cursor.execute(sql_request, (purchase_string, chat_id))
     connection.commit()
 
 
 def delete_purchase(chat_id):
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = 'DELETE FROM purchase WHERE id=?;'
     cursor.execute(sql_request, (chat_id,))
     connection.commit()
@@ -100,7 +100,7 @@ def set_reminder(string_datetime_reminder, bot, chat_id):
         bot.send_message(chat_id, 'Ты просил напомнить про покупки.\rВот список',
                          reply_markup=inline_keyboard)
 
-        connection, cursor = db_connect.connect()
+        connection, cursor = db.connect()
         sql_request = 'DELETE FROM reminder_purchase WHERE id=?;'
         cursor.execute(sql_request, (chat_id,))
         connection.commit()
@@ -118,14 +118,14 @@ def set_reminder(string_datetime_reminder, bot, chat_id):
 
 
 def write_data_reminder(string_datetime_reminder, chat_id):
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = 'INSERT INTO reminder_purchase VALUES (?, ?);'
     cursor.execute(sql_request, (string_datetime_reminder, chat_id))
     connection.commit()
 
 
 def read_data_reminder():
-    connection, cursor = db_connect.connect()
+    connection, cursor = db.connect()
     sql_request = 'SELECT * FROM reminder_purchase;'
     cursor.execute(sql_request)
     return cursor.fetchall()

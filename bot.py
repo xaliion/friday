@@ -1,9 +1,8 @@
 import json
 import apiai
-import shoper
 import telebot as tb
 from time import sleep
-from core import loger, proxy_changer
+from modules import loger, proxy_changer, shoper
 
 
 working_proxy = proxy_changer.read_proxy()
@@ -43,6 +42,7 @@ def response_to_user(message):
     if action == 'purchase_name':
         list_name = response_json['result']['parameters']['list_name']
         bot.send_message(chat_id, f'Назову список {list_name}\r\nЧто будем покупать?')
+        shoper.save_purchase_name(list_name)
     elif action == 'purchase_list':
         # Достаём список покупок от пользователя
         purchase_list_from_ai = response_json['result']['parameters']['list'][0]

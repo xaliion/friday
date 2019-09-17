@@ -1,4 +1,4 @@
-from core import list_controller
+import list_controller
 
 
 def create_purchase(purchase_list_from_ai):

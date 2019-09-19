@@ -1,10 +1,12 @@
 import telebot as tb
 from modules import proxy_changer
+from dialogflow import df
 
 
 proxy = proxy_changer.read_proxy()
 bot = tb.TeleBot('759079522:AAEG7X-toPb_SZxmQhBKLKJltlYaw6dh60Q', threaded=False)
 tb.apihelper.proxy = proxy_changer.set_proxy(proxy)
+action = 'test'
 
 
 @bot.message_handler(commands=['proxy'])
@@ -18,7 +20,8 @@ def send_proxy_info(message):
 
 @bot.message_handler(content_types=['text'])
 def response_to_user(message):
-    bot.reply_to(message, 'НОМАНО')
+    response = df.request_to_dialogflow(df.collect_request(message.text))
+    bot.send_message(message.chat.id, f'{df.response_ai(response)}')
 
 
 try:
@@ -26,10 +29,9 @@ try:
     bot.polling()
 
 # Если прокси отваливается
-except OSError as e:
+except OSError:
     bot.stop_polling()
 
-    # Ждём пять секунд, чтобы не словить бан за слишком частые запросы
     proxy = proxy_changer.get_proxy()
     proxy_changer.write_proxy(proxy)
 

@@ -13,6 +13,7 @@ WORKDIR /shoper_bot
 # Устанавливаем pytelegrambotapi и apiai
 RUN pip3 install --no-cache-dir pytelegrambotapi
 RUN pip3 install --no-cache-dir apiai
+RUN pip3 install --no-cache-dir configparser
 
 # Устанавливаем тайм зону
 ENV TZ=Europe/Moscow

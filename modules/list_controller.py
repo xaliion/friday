@@ -7,21 +7,29 @@ from telebot import types
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
 
-def make_purchase_list(purchase_string):
+class purchase_list(object):
+    def __init__(self, id_customer):
+        self.id_customer = id_customer
+
+    name_list = None
+    goods_list = None
+
+
+def purchase_to_list(purchase_string):
     purchase_list = purchase_string.split(', ')
     return purchase_list
 
 
-def make_purchase_string(purchase_list):
+def purchase_to_string(purchase_list):
     purchase_string = ', '.join(purchase_list)
     return purchase_string
 
 
 def make_firstletter_capital(purchase_string):
-    purchase_list = make_purchase_list(purchase_string)
+    purchase_list = purchase_to_list(purchase_string)
     for item_index in range(len(purchase_list)):
         purchase_list[item_index] = purchase_list[item_index].capitalize()
-    return make_purchase_string(purchase_list)
+    return purchase_to_string(purchase_list)
 
 
 def create_inline_keyboard(purchase_list):
@@ -30,13 +38,6 @@ def create_inline_keyboard(purchase_list):
         button = types.InlineKeyboardButton(item, callback_data=item)
         inline_keyboard.add(button)
     return inline_keyboard
-
-
-def write_purchase_name(purchase_name):
-    connection, cursor = db.connect()
-    sql_request = 'INSERT INTO purchase (purchase_name) VALUES (?)'
-    cursor.execute(sql_request, (purchase_name, ))
-    connection.commit()
 
 
 def write_purchase(purchase_string, chat_id):

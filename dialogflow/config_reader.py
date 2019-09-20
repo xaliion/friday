@@ -2,7 +2,7 @@ import json
 
 
 def config():
-    NAME_CONFIG_FILE = 'config.json'
+    NAME_CONFIG_FILE = 'dialogflow/config.json'
 
     def read_config():
         with open(NAME_CONFIG_FILE, 'r') as read_file:
@@ -25,3 +25,7 @@ def session_id(config):
 
 def lang(config):
     return config()['language']['lang']
+
+
+f = config()
+print(f)

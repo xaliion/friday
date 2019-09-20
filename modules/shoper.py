@@ -1,4 +1,4 @@
-from core import loger, list_controller
+import list_controller
 
 
 def create_purchase(purchase_list_from_ai):
@@ -6,15 +6,12 @@ def create_purchase(purchase_list_from_ai):
     return purchase_string
 
 
+def save_purchase_name(purchase_name):
+    list_controller.write_purchase_name(purchase_name)
+
+
 def save_purchase(purchase_string, chat_id):
-    try:
-        list_controller.write_purchase(purchase_string, chat_id)
-    except (Exception.Error.DatabaseError, Exception.Error.InterfaceError) as error:
-        shoper_loger = loger.get_loger()
-        shoper_loger.error('Ошибка базы данных при сохранении списка покупок.\nОшибка: {}').format(error)
-    else:
-        return True
-    return False
+    list_controller.write_purchase(purchase_string, chat_id)
 
 
 def create_inline_keyboard(purchase_string):

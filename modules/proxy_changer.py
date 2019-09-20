@@ -28,8 +28,8 @@ def get_proxy():
 
 
 def write_proxy(current_proxy):
-    sql_requests = ["UPDATE proxy SET ip=?, port=?, country=? WHERE id=current_proxy;",
-                    "INSERT INTO cache_proxy VALUES (?, ?, ?);"]
+    sql_requests = ["UPDATE proxy SET ip=?, port=? WHERE id=0;",
+                    "INSERT INTO cache_proxy VALUES (?, ?);"]
     sql_request_data = (proxy.ip(current_proxy), proxy.port(current_proxy))
 
     for sql_request_body in sql_requests:

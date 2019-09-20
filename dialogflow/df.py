@@ -1,7 +1,6 @@
 import json
 import apiai
-import configparser
-
+import dialogflow.config_reader as config_reader
 
 def make_response(response_from_ai, action, parameters):
     def cons_response(data_obtain):
@@ -29,12 +28,11 @@ def parameters(response):
 
 
 def collect_request(message):
-    config_file = configparser.ConfigParser()
-    config_file.read('/Users/Konstantin/Desktop/friday/dialogflow/config.ini')
+    config = config_reader.config()
 
-    request = apiai.ApiAI(f'{config_file.get("Connection", "token")}').text_request()
-    request.session_id = f'{config_file.get("Connection", "session_id")}'
-    request.lang = f'{config_file.get("Language", "lang")}'
+    request = apiai.ApiAI(f'{config_reader.token(config)}').text_request()
+    request.session_id = f'{config_reader.session_id(config)}'
+    request.lang = f'{config_reader.lang(config)}'
     request.query = message
 
     return request

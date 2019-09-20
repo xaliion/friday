@@ -1,7 +1,6 @@
 import json
 import apiai
-import config_reader
-
+import dialogflow.config_reader as config_reader
 
 def make_response(response_from_ai, action, parameters):
     def cons_response(data_obtain):

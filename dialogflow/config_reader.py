@@ -2,7 +2,7 @@ import json
 
 
 def config():
-    NAME_CONFIG_FILE = 'dialogflow/config.json'
+    NAME_CONFIG_FILE = 'dialogflow/dialogflow_config.json'
 
     def read_config():
         with open(NAME_CONFIG_FILE, 'r') as read_file:

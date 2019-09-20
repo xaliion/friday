@@ -1,18 +1,10 @@
-import db_request
+from .core import db_request
 import locale
 from telebot import types
 
 
 # Ставим локаль для правильного вывода месяца
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
-
-
-class purchase_list(object):
-    def __init__(self, id_customer):
-        self.id_customer = id_customer
-
-    name_list = None
-    goods_list = None
 
 
 def purchase_to_list(purchase_string):
@@ -41,28 +33,28 @@ def create_inline_keyboard(purchase_list):
 
 
 def write_purchase(purchase_string, chat_id):
-    connection, cursor = db.connect()
+    connection, cursor = db_request.connect()
     sql_request = 'INSERT INTO purchase (purchase_list, id) VALUES (?, ?);'
     cursor.execute(sql_request, (purchase_string, chat_id))
     connection.commit()
 
 
 def read_purchase(chat_id):
-    connection, cursor = db.connect()
+    connection, cursor = db_request.connect()
     sql_request = 'SELECT purchase_list FROM purchase WHERE id=?;'
     cursor.execute(sql_request, (chat_id, ))
     return cursor.fetchall()[0][0]
 
 
 def update_purchase(purchase_string, chat_id):
-    connection, cursor = db.connect()
+    connection, cursor = db_request.connect()
     sql_request = 'UPDATE purchase SET purchase_list=? WHERE id=?;'
     cursor.execute(sql_request, (purchase_string, chat_id))
     connection.commit()
 
 
 def delete_purchase(chat_id):
-    connection, cursor = db.connect()
+    connection, cursor = db_request.connect()
     sql_request = 'DELETE FROM purchase WHERE id=?;'
     cursor.execute(sql_request, (chat_id,))
     connection.commit()

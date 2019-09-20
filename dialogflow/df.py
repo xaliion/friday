@@ -42,6 +42,9 @@ def request_to_dialogflow(request):
     full_json_response = json.loads(request.getresponse().read().decode('utf-8'))
     response_ai = full_json_response['result']['fulfillment']['speech']
     action = full_json_response['result']['action']
-    parameters = full_json_response['result']['parameters']
+    try:
+        parameters = full_json_response['result']['parameters']
+    except KeyError:
+        parameters = None
 
     return make_response(response_ai, action, parameters)

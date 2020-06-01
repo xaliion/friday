@@ -1,5 +1,4 @@
 import telebot as tb
-from modules import list_controller
 from dialogflow import df
 import shoper
 

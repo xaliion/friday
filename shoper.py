@@ -5,7 +5,7 @@ from telebot import types
 class Purchases():
     def __init__(self, title, purchases, data_remind=None):
         self.title = title
-        self.purchases = self.__make_firstletter_capital(purchases)
+        self.purchases = self.__make_firstletter_capital(purchases, return_type='string')
         self.remind = data_remind
     
     def __purchase_to_list(self, purchase_string):

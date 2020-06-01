@@ -34,6 +34,7 @@ class Purchases():
         connection, cursor = db_request.connect()
         sql_request = 'SELECT purchase_name, purchase_list FROM purchase WHERE id=?;'
         cursor.execute(sql_request, (chat_id, ))
+        print(cursor.fetchall())
         return cursor.fetchall()[0][0]
 
     def __update_purchase(self, purchase_string, chat_id):

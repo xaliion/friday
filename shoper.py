@@ -24,22 +24,22 @@ class Purchases():
             return purchase_list
         return self.__purchase_to_string(purchase_list)
 
-    def __write_purchase(self, purchase_string, chat_id):
+    def __write_purchase(self, chat_id):
         connection, cursor = db_request.connect()
-        sql_request = 'INSERT INTO purchase (purchase_list, id) VALUES (?, ?);'
-        cursor.execute(sql_request, (purchase_string, chat_id))
+        sql_request = 'INSERT INTO purchase (purchase_name, purchase_list, id) VALUES (?, ?, ?);'
+        cursor.execute(sql_request, (self.title, self.__purchase_to_string(self.purchases), chat_id))
         connection.commit()
 
     def __read_purchase(self, chat_id):
         connection, cursor = db_request.connect()
-        sql_request = 'SELECT purchase_list FROM purchase WHERE id=?;'
+        sql_request = 'SELECT purchase_name, purchase_list FROM purchase WHERE id=?;'
         cursor.execute(sql_request, (chat_id, ))
         return cursor.fetchall()[0][0]
 
     def __update_purchase(self, purchase_string, chat_id):
         connection, cursor = db_request.connect()
-        sql_request = 'UPDATE purchase SET purchase_list=? WHERE id=?;'
-        cursor.execute(sql_request, (purchase_string, chat_id))
+        sql_request = 'UPDATE purchase SET purchase_name=?, purchase_list=? WHERE id=?;'
+        cursor.execute(sql_request, (self.title, self.purchases, chat_id))
         connection.commit()
 
     def __delete_purchase(self, chat_id):
@@ -49,7 +49,7 @@ class Purchases():
         connection.commit()
 
     def create_inline_keyboard(self):
-        purchase_list = self.__purchase_to_string(self.purchases)
+        purchase_list = self.purchases
         inline_keyboard = types.InlineKeyboardMarkup()
         for item in purchase_list:
             button = types.InlineKeyboardButton(item, callback_data=item)
@@ -58,7 +58,7 @@ class Purchases():
 
     def edit_purchase(self, query, chat_id):
         purchase_string = self.__read_purchase(chat_id)
-        purchase_list = self.purchases
+        purchase_list = self.__purchase_to_list(purchase_string)
         inline_keyboard = self.create_inline_keyboard(purchase_list)
 
         # Удаляем кнопку
@@ -77,4 +77,3 @@ class Purchases():
     def delete_purchase(self, bot, chat_id, query):
         self.__delete_purchase(chat_id)
         bot.delete_message(chat_id, query.message.message_id)
-

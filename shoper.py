@@ -5,7 +5,7 @@ from telebot import types
 class Purchases():
     def __init__(self, title, purchases, data_remind=None):
         self.title = title
-        self.purchases = self.__make_firstletter_capital(purchases, return_type='list')
+        self.purchases = self.__make_firstletter_capital(purchases)
         self.remind = data_remind
     
     def __purchase_to_list(self, purchase_string):
@@ -25,7 +25,7 @@ class Purchases():
         return self.__purchase_to_string(purchase_list)
 
     def create_inline_keyboard(self):
-        purchase_list = self.purchases
+        purchase_list = self.__purchase_to_list(purchases)
         inline_keyboard = types.InlineKeyboardMarkup()
         for item in purchase_list:
             button = types.InlineKeyboardButton(item, callback_data=item)
@@ -33,9 +33,9 @@ class Purchases():
         return inline_keyboard
 
     def edit_purchase(self, query, chat_id):
-        purchase_string = self.__read_purchase(chat_id)
-        purchase_list = self.__purchase_to_list(purchase_string)
-        inline_keyboard = self.create_inline_keyboard(purchase_list)
+        self.purchases = db_request.__read_purchase(chat_id)
+        purchase_list = self.__purchase_to_list(self.purchases)
+        inline_keyboard = self.create_inline_keyboard(self.purchases)
 
         # Удаляем кнопку
         for button in inline_keyboard.keyboard:
@@ -47,12 +47,12 @@ class Purchases():
                 purchase_list.remove(button[0]['text'])
                 # Обновляем список в базе
                 purchase_string = self.__purchase_to_string(purchase_list)
-                self.__update_purchase(purchase_string, chat_id)
+                db_request.__update_purchase(purchase_string, chat_id)
         return inline_keyboard
 
     def delete_purchase(self, bot, chat_id, query):
-        self.__delete_purchase(chat_id)
+        db_request.__delete_purchase(chat_id)
         bot.delete_message(chat_id, query.message.message_id)
 
     def save_purchase(self, chat_id):
-        db_request.write_purchase(self.title, self.purchases, chat_id)
+        db_request.write_purchase(self.title, self.__purchases, chat_id)

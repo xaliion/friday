@@ -33,7 +33,7 @@ class Purchases():
         return inline_keyboard
 
     def edit_purchase(self, query, chat_id):
-        self.purchases = db_request.__read_purchase(chat_id)
+        self.purchases = db_request.read_purchase(chat_id)
         purchase_list = self.__purchase_to_list(self.purchases)
         inline_keyboard = self.create_inline_keyboard(self.purchases)
 
@@ -47,11 +47,11 @@ class Purchases():
                 purchase_list.remove(button[0]['text'])
                 # Обновляем список в базе
                 purchase_string = self.__purchase_to_string(purchase_list)
-                db_request.__update_purchase(purchase_string, chat_id)
+                db_request.update_purchase(purchase_string, chat_id)
         return inline_keyboard
 
     def delete_purchase(self, bot, chat_id, query):
-        db_request.__delete_purchase(chat_id)
+        db_request.delete_purchase(chat_id)
         bot.delete_message(chat_id, query.message.message_id)
 
     def save_purchase(self, chat_id):

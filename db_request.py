@@ -20,10 +20,10 @@ def read_purchase(chat_id):
     purchase = cursor.fetchall()
     return [purchase[0][0], purchase[0][1]]
 
-def update_purchase(purchase_string, chat_id):
+def update_purchase(title, purchases, chat_id):
     connection, cursor = connect()
     sql_request = 'UPDATE purchase SET purchase_name=?, purchase_list=? WHERE id=?;'
-    cursor.execute(sql_request, (self.title, self.purchases, chat_id))
+    cursor.execute(sql_request, (title, purchases, chat_id))
     connection.commit()
 
 def delete_purchase(chat_id):

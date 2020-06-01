@@ -47,7 +47,7 @@ class Purchases():
                 purchase_list.remove(button[0]['text'])
                 # Обновляем список в базе
                 purchase_string = self.__purchase_to_string(purchase_list)
-                db_request.update_purchase(purchase_string, chat_id)
+                db_request.update_purchase(self.title, self.purchases, chat_id)
         return inline_keyboard
 
     def delete_purchase(self, bot, chat_id, query):

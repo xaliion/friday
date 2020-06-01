@@ -34,7 +34,10 @@ def set_purchase(message):
 @bot.callback_query_handler(lambda query: True)
 def delete_button_from_list(query):
     chat_id = query.message.chat.id
-    purchase = users_purchases_data[chat_id]
+    try:
+        purchase = users_purchases_data[chat_id]
+    except KeyError:
+        pass
     inline_keyboard = purchase.edit_purchase(query, chat_id)
 
     # Если список пустой – удаляем список

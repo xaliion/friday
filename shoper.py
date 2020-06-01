@@ -1,4 +1,4 @@
-import sqlite3
+import db_request
 from telebot import types
 
 
@@ -25,25 +25,25 @@ class Purchases():
         return self.__purchase_to_string(purchase_list)
 
     def __write_purchase(self, chat_id):
-        connection, cursor = sqlite3.connect('friday.db')
+        connection, cursor = db_request.connect()
         sql_request = 'INSERT INTO purchase (purchase_name, purchase_list, id) VALUES (?, ?, ?);'
         cursor.execute(sql_request, (self.title, self.__purchase_to_string(self.purchases), chat_id))
         connection.commit()
 
     def __read_purchase(self, chat_id):
-        connection, cursor = sqlite3.connect('friday.db')
+        connection, cursor = db_request.connect()
         sql_request = 'SELECT purchase_name, purchase_list FROM purchase WHERE id=?;'
         cursor.execute(sql_request, (chat_id, ))
         return cursor.fetchall()[0][0]
 
     def __update_purchase(self, purchase_string, chat_id):
-        connection, cursor = sqlite3.connect('friday.db')
+        connection, cursor = db_request.connect()
         sql_request = 'UPDATE purchase SET purchase_name=?, purchase_list=? WHERE id=?;'
         cursor.execute(sql_request, (self.title, self.purchases, chat_id))
         connection.commit()
 
     def __delete_purchase(self, chat_id):
-        connection, cursor = sqlite3.connect('friday.db')
+        connection, cursor = db_request.connect()
         sql_request = 'DELETE FROM purchase WHERE id=?;'
         cursor.execute(sql_request, (chat_id,))
         connection.commit()

@@ -25,9 +25,25 @@ def set_purchase(message):
     users_purchases_data[message.chat.id].update({'goods': message.text})
     current_user = users_purchases_data[message.chat.id]
     user_purchases = shoper.Purchases(title=current_user['list_title'], purchases=current_user['goods'])
+    users_purchases_data[message.chat.id] = user_purchases
     keyboard = user_purchases.create_inline_keyboard()
     bot.send_message(message.chat.id, 'Вот список, держи')
     bot.send_message(message.chat.id, f'{user_purchases.title}', reply_markup=keyboard)
+
+
+@bot.callback_query_handler(lambda query: True)
+def delete_button_from_list(query):
+    chat_id = query.message.chat.id
+    purchase = users_purchases_data[chat_id]
+    inline_keyboard = purchase.edit_purchase(query, chat_id)
+
+    # Если список пустой – удаляем список
+    if not inline_keyboard.keyboard:
+        purchase.delete_purchase(bot, chat_id, query)
+    # Если не пустой, обновляем сообщение с ним
+    else:
+        bot.edit_message_reply_markup(chat_id, query.message.message_id,
+                                      reply_markup=inline_keyboard)
 
 
 bot.polling()

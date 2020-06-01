@@ -25,7 +25,7 @@ class Purchases():
         return self.__purchase_to_string(purchase_list)
 
     def create_inline_keyboard(self):
-        purchase_list = self.__purchase_to_list(purchases)
+        purchase_list = self.__purchase_to_list(self.purchases)
         inline_keyboard = types.InlineKeyboardMarkup()
         for item in purchase_list:
             button = types.InlineKeyboardButton(item, callback_data=item)
@@ -55,4 +55,4 @@ class Purchases():
         bot.delete_message(chat_id, query.message.message_id)
 
     def save_purchase(self, chat_id):
-        db_request.write_purchase(self.title, self.__purchases, chat_id)
+        db_request.write_purchase(self.title, self.purchases, chat_id)

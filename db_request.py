@@ -17,7 +17,8 @@ def read_purchase(chat_id):
     connection, cursor = connect()
     sql_request = 'SELECT purchase_name, purchase_list FROM purchase WHERE id=?;'
     cursor.execute(sql_request, (chat_id, ))
-    print(cursor.fetchall())
+    purchase = cursor.fetchall()
+    return [purchase[0][0], purchase[0][1]]
 
 def update_purchase(purchase_string, chat_id):
     connection, cursor = connect()

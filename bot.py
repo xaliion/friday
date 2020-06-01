@@ -25,6 +25,7 @@ def set_purchase(message):
     users_purchases_data[message.chat.id].update({'goods': message.text})
     current_user = users_purchases_data[message.chat.id]
     user_purchases = shoper.Purchases(title=current_user['list_title'], purchases=current_user['goods'])
+    user_purchases.save_purchase(message.chat.id)
     users_purchases_data[message.chat.id] = user_purchases
     keyboard = user_purchases.create_inline_keyboard()
     bot.send_message(message.chat.id, 'Вот список, держи')

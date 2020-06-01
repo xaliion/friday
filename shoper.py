@@ -24,31 +24,6 @@ class Purchases():
             return purchase_list
         return self.__purchase_to_string(purchase_list)
 
-    def __write_purchase(self, chat_id):
-        connection, cursor = db_request.connect()
-        sql_request = 'INSERT INTO purchase (purchase_name, purchase_list, id) VALUES (?, ?, ?);'
-        cursor.execute(sql_request, (self.title, self.__purchase_to_string(self.purchases), chat_id))
-        connection.commit()
-
-    def __read_purchase(self, chat_id):
-        connection, cursor = db_request.connect()
-        sql_request = 'SELECT purchase_name, purchase_list FROM purchase WHERE id=?;'
-        cursor.execute(sql_request, (chat_id, ))
-        print(cursor.fetchall())
-        return cursor.fetchall()[0][0]
-
-    def __update_purchase(self, purchase_string, chat_id):
-        connection, cursor = db_request.connect()
-        sql_request = 'UPDATE purchase SET purchase_name=?, purchase_list=? WHERE id=?;'
-        cursor.execute(sql_request, (self.title, self.purchases, chat_id))
-        connection.commit()
-
-    def __delete_purchase(self, chat_id):
-        connection, cursor = db_request.connect()
-        sql_request = 'DELETE FROM purchase WHERE id=?;'
-        cursor.execute(sql_request, (chat_id,))
-        connection.commit()
-
     def create_inline_keyboard(self):
         purchase_list = self.purchases
         inline_keyboard = types.InlineKeyboardMarkup()
@@ -78,3 +53,6 @@ class Purchases():
     def delete_purchase(self, bot, chat_id, query):
         self.__delete_purchase(chat_id)
         bot.delete_message(chat_id, query.message.message_id)
+
+    def save_purchase(self, chat_id):
+        db_request.write_purchase(self.title, self.purchases, chat_id)

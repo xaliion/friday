@@ -4,10 +4,7 @@ from modules import list_controller
 from dialogflow import df
 
 
-proxy = proxy_changer.read_proxy()
 bot = tb.TeleBot('759079522:AAEG7X-toPb_SZxmQhBKLKJltlYaw6dh60Q', threaded=False)
-tb.apihelper.proxy = proxy_changer.set_proxy(proxy)
-
 user_save = {}
 
 
@@ -44,15 +41,4 @@ def set_purchase(message):
     bot.send_message(message.chat.id, f'{list_name}', reply_markup=keyboard)
 
 
-try:
-    # Запускаем бота
-    bot.polling()
-
-# Если прокси отваливается
-except OSError:
-    bot.stop_polling()
-
-    proxy = proxy_changer.get_proxy()
-    proxy_changer.write_proxy(proxy)
-
-    bot.polling()
+bot.polling()

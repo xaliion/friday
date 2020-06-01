@@ -33,7 +33,7 @@ class Purchases():
         return inline_keyboard
 
     def edit_purchase(self, query, chat_id):
-        self.purchases = db_request.read_purchase(chat_id)
+        self.purchases = db_request.read_purchase(chat_id)[1]
         purchase_list = self.__purchase_to_list(self.purchases)
         inline_keyboard = self.create_inline_keyboard(self.purchases)
 

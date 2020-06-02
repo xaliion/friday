@@ -17,13 +17,11 @@ def response_to_user(message):
 def set_purchase(message):
     users_purchases_data[message.chat.id] = {'goods': message.text}
     current_user = users_purchases_data[message.chat.id]
-    print(users_purchases_data[message.chat.id])
     user_purchases = shoper.Purchases(purchases=current_user['goods'])
-    print(user_purchases.purchases)
     user_purchases.save_purchase(message.chat.id)
     users_purchases_data[message.chat.id] = user_purchases
     keyboard = user_purchases.create_inline_keyboard()
-    bot.send_message(message.chat.id, f'{user_purchases.purchases}', reply_markup=keyboard)
+    bot.send_message(message.chat.id, 'Создала список', reply_markup=keyboard)
 
 
 @bot.callback_query_handler(lambda query: True)

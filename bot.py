@@ -28,7 +28,6 @@ def set_purchase(message):
     user_purchases.save_purchase(message.chat.id)
     users_purchases_data[message.chat.id] = user_purchases
     keyboard = user_purchases.create_inline_keyboard()
-    bot.send_message(message.chat.id, 'Вот список, держи')
     bot.send_message(message.chat.id, f'{user_purchases.title}', reply_markup=keyboard)
 
 

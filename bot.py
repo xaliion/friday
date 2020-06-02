@@ -10,13 +10,11 @@ users_purchases_data = {}
 @bot.message_handler(content_types=['text'])
 def response_to_user(message):
     response = df.request_to_dialogflow(df.collect_request(message.text))
-    print(df.response_ai(response))
     goods = bot.send_message(message.chat.id, f'{df.response_ai(response)}')
     if df.action(response) == 'create_list':
         bot.register_next_step_handler(goods, set_purchase)
 
 def set_purchase(message):
-    print(message.text)
     users_purchases_data[message.chat.id] = {'goods': message.text}
     current_user = users_purchases_data[message.chat.id]
     print(users_purchases_data[message.chat.id])

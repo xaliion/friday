@@ -10,21 +10,14 @@ users_purchases_data = {}
 @bot.message_handler(content_types=['text'])
 def response_to_user(message):
     response = df.request_to_dialogflow(df.collect_request(message.text))
-    list_title = bot.send_message(message.chat.id, f'{df.response_ai(response)}')
+    goods = bot.send_message(message.chat.id, f'{df.response_ai(response)}')
     if df.action(response) == 'create_list':
-        bot.register_next_step_handler(list_title, set_list)
-
-def set_list(message):
-    users_purchases_data[message.chat.id] = {'list_title': message.text}
-    response = df.request_to_dialogflow(df.collect_request(message.text))
-    purchases = bot.send_message(message.chat.id, f'{df.response_ai(response)}')
-    bot.register_next_step_handler(purchases, set_purchase)
-
+        bot.register_next_step_handler(goods, set_purchase)
 
 def set_purchase(message):
-    users_purchases_data[message.chat.id].update({'goods': message.text})
+    users_purchases_data[message.chat.id] = {'goods': message.text}
     current_user = users_purchases_data[message.chat.id]
-    user_purchases = shoper.Purchases(title=current_user['list_title'], purchases=current_user['goods'])
+    user_purchases = shoper.Purchases(purchases=current_user['goods'])
     user_purchases.save_purchase(message.chat.id)
     users_purchases_data[message.chat.id] = user_purchases
     keyboard = user_purchases.create_inline_keyboard()

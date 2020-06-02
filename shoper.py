@@ -3,8 +3,7 @@ from telebot import types
 
 
 class Purchases():
-    def __init__(self, title, purchases, data_remind=None):
-        self.title = title
+    def __init__(self, purchases, data_remind=None):
         self.purchases = self.__make_firstletter_capital(purchases, return_type='string')
         self.remind = data_remind
     
@@ -33,7 +32,7 @@ class Purchases():
         return inline_keyboard
 
     def edit_purchase(self, query, chat_id):
-        self.purchases = db_request.read_purchase(chat_id)[1]
+        self.purchases = db_request.read_purchase(chat_id)
         purchase_list = self.__purchase_to_list(self.purchases)
         inline_keyboard = self.create_inline_keyboard()
 
@@ -47,7 +46,7 @@ class Purchases():
                 purchase_list.remove(button[0]['text'])
                 # Обновляем список в базе
                 self.purchases = self.__purchase_to_string(purchase_list)
-                db_request.update_purchase(self.title, self.purchases, chat_id)
+                db_request.update_purchase(self.purchases, chat_id)
         return inline_keyboard
 
     def delete_purchase(self, bot, chat_id, query):
@@ -55,4 +54,4 @@ class Purchases():
         bot.delete_message(chat_id, query.message.message_id)
 
     def save_purchase(self, chat_id):
-        db_request.write_purchase(self.title, self.purchases, chat_id)
+        db_request.write_purchase(self.purchases, chat_id)

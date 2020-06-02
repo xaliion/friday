@@ -16,6 +16,7 @@ def response_to_user(message):
         bot.register_next_step_handler(goods, set_purchase)
 
 def set_purchase(message):
+    print(message.text)
     users_purchases_data[message.chat.id] = {'goods': message.text}
     current_user = users_purchases_data[message.chat.id]
     print(users_purchases_data[message.chat.id])

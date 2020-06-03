@@ -58,6 +58,7 @@ def set_reminder(string_datetime_reminder, purchases, bot, chat_id):
         remind(delay=True)
     else:
         time_delta = get_timedelta(datetime_reminder)
+        print(f'delta – {time_delta}')
         timer = Timer(time_delta, remind)
         timer.start()
 

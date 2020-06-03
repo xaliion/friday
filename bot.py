@@ -17,9 +17,9 @@ def response_to_user(message):
         keyboard = user_purchases.create_inline_keyboard()
         bot.send_message(message.chat.id, f'{df.response_ai(response)}', reply_markup=keyboard)
     elif df.action(response) == 'purchase_reminder':
-        response = df.request_to_dialogflow(df.collect_request(message.text))
         datetime_remind_from_ai = df.parameters(response)
         print(datetime_remind_from_ai)
+        bot.send_message(message.chat.id, f'{df.response_ai(response)}')
     else:
         bot.send_message(message.chat.id, f'{df.response_ai(response)}')
 

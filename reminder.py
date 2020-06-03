@@ -54,6 +54,7 @@ def set_reminder(string_datetime_reminder, purchases, bot, chat_id):
             timer.cancel()
 
     datetime_reminder = datetime.fromisoformat(string_datetime_reminder)
+    print(datetime_reminder)
     if datetime_reminder < datetime.now():
         remind(delay=True)
     else:

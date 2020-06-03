@@ -13,6 +13,13 @@ def response_to_user(message):
     goods = bot.send_message(message.chat.id, f'{df.response_ai(response)}')
     if df.action(response) == 'create_list':
         bot.register_next_step_handler(goods, set_purchase)
+    elif df.action(response) == 'purchase_reminder':
+        response = df.request_to_dialogflow(df.collect_request(message.text))
+        datetime_remind_from_ai = df.parameters(response)
+        if not datetime_remind_from_ai['time']:
+            bot.send_message(message.chat.id, 'Не могу прочитать время')
+        else:
+            bot.send_message(message.chat.id, f'{df.response_ai(response)}')
 
 def set_purchase(message):
     users_purchases_data[message.chat.id] = {'goods': message.text}

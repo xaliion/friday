@@ -25,7 +25,3 @@ def session_id(config):
 
 def lang(config):
     return config()['language']['lang']
-
-
-f = config()
-print(f)

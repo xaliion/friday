@@ -55,3 +55,6 @@ class Purchases():
 
     def save_purchase(self, chat_id):
         db_request.write_purchase(self.purchases, chat_id)
+    
+    def get_purchase(self, chat_id):
+        self.purchases = db_request.read_purchase(chat_id)

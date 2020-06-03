@@ -44,7 +44,6 @@ def delete_button_from_list(query):
     chat_id = query.message.chat.id
     try:
         purchase = users_purchases_data[chat_id]
-        purchase.get_purchase(chat_id)
         inline_keyboard = purchase.edit_purchase(query, chat_id)
     except KeyError:
         pass

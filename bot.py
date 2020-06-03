@@ -19,7 +19,13 @@ def response_to_user(message):
         bot.send_message(message.chat.id, f'{df.response_ai(response)}', reply_markup=keyboard)
     elif df.action(response) == 'purchase_reminder':
         datetime_remind_from_ai = df.parameters(response)
-        bot.send_message(message.chat.id, f'{df.response_ai(response)}')
+        if not datetime_remind_from_ai['time']:
+            bot.send_message(message.chat.id, 'Не могу прочитать время')
+        else:
+            purchases = users_purchases_data[message.chat.id]
+            datetime_reminder = purchases.create_reminder(datetime_remind_from_ai, message.chat.id)
+            message_to_recap = purchases.set_reminder(datetime_reminder, bot, message.chat.id)
+            bot.send_message(message.chat.id, message_to_recap)
     else:
         bot.send_message(message.chat.id, f'{df.response_ai(response)}')
 

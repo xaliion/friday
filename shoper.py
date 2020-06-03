@@ -1,5 +1,6 @@
 import db_request
 from telebot import types
+import reminder
 
 
 class Purchases():
@@ -56,5 +57,13 @@ class Purchases():
     def save_purchase(self, chat_id):
         db_request.write_purchase(self.purchases, chat_id)
     
-    def get_purchase(self, chat_id):
-        self.purchases = db_request.read_purchase(chat_id)
+    def create_reminder(self, datetime_remind_from_ai, chat_id):
+        datetime_reminder = reminder.get_datetime_reminder(datetime_remind_from_ai['time'],
+                                                           datetime_remind_from_ai['date'])
+        reminder.write_data_reminder(datetime_reminder, chat_id)
+        return datetime_reminder
+
+    def set_reminder(self, datetime_reminder, bot, chat_id):
+        reminder.set_reminder(datetime_reminder, bot, self, chat_id)
+        message_to_recap = reminder.get_message_time_reminder(datetime_reminder)
+        return message_to_recap

@@ -11,8 +11,7 @@ users_purchases_data = {}
 def response_to_user(message):
     response = df.request_to_dialogflow(df.collect_request(message.text))
     if df.action(response) == 'set_purchase_list':
-        goods = df.parameters(response)
-        print(goods)
+        goods = df.parameters(response)['purchase_list']
         user_purchases = shoper.Purchases(purchases=goods)
         user_purchases.save_purchase(message.chat.id)
         keyboard = user_purchases.create_inline_keyboard()

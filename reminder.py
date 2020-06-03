@@ -36,6 +36,7 @@ def get_message_time_reminder(string_datetime_reminder):
 def get_timedelta(datetime_reminder):
     datetime_now = datetime.now()
     delta = datetime_reminder - datetime_now
+    print(datetime_now, datetime_reminder)
     return delta.seconds
 
 

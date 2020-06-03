@@ -23,6 +23,8 @@ def response_to_user(message):
             bot.send_message(message.chat.id, 'Не могу прочитать время')
         else:
             bot.send_message(message.chat.id, f'{df.response_ai(response)}')
+    else:
+        bot.send_message(message.chat.id, f'{df.response_ai(response)}')
 
 def set_purchase(message):
     users_purchases_data[message.chat.id] = {'goods': message.text}

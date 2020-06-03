@@ -10,7 +10,7 @@ users_purchases_data = {}
 @bot.message_handler(content_types=['text'])
 def response_to_user(message):
     response = df.request_to_dialogflow(df.collect_request(message.text))
-    if df.action(response) == 'set_list':
+    if df.action(response) == 'set_purchase_list':
         goods = df.parameters(response)
         print(goods)
         user_purchases = shoper.Purchases(purchases=goods)

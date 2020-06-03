@@ -14,11 +14,11 @@ def response_to_user(message):
         goods = df.parameters(response)['purchase_list']
         user_purchases = shoper.Purchases(purchases=goods)
         user_purchases.save_purchase(message.chat.id)
+        users_purchases_data[message.chat.id] = user_purchases
         keyboard = user_purchases.create_inline_keyboard()
         bot.send_message(message.chat.id, f'{df.response_ai(response)}', reply_markup=keyboard)
     elif df.action(response) == 'purchase_reminder':
         datetime_remind_from_ai = df.parameters(response)
-        print(datetime_remind_from_ai)
         bot.send_message(message.chat.id, f'{df.response_ai(response)}')
     else:
         bot.send_message(message.chat.id, f'{df.response_ai(response)}')

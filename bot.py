@@ -12,6 +12,7 @@ def response_to_user(message):
     response = df.request_to_dialogflow(df.collect_request(message.text))
     if df.action(response) == 'set_list':
         goods = df.parameters(response)
+        print(goods)
         user_purchases = shoper.Purchases(purchases=goods)
         user_purchases.save_purchase(message.chat.id)
         keyboard = user_purchases.create_inline_keyboard()
@@ -19,10 +20,7 @@ def response_to_user(message):
     elif df.action(response) == 'purchase_reminder':
         response = df.request_to_dialogflow(df.collect_request(message.text))
         datetime_remind_from_ai = df.parameters(response)
-        if not datetime_remind_from_ai['time']:
-            bot.send_message(message.chat.id, 'Не могу прочитать время')
-        else:
-            bot.send_message(message.chat.id, f'{df.response_ai(response)}')
+        print(datetime_remind_from_ai)
     else:
         bot.send_message(message.chat.id, f'{df.response_ai(response)}')
 

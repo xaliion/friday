@@ -67,3 +67,8 @@ class Purchases():
         reminder.set_reminder(datetime_reminder, self, bot, chat_id)
         message_to_recap = reminder.get_message_time_reminder(datetime_reminder)
         return message_to_recap
+
+
+def get_purchases(chat_id):
+    purchases = db_request.read_purchase(chat_id)
+    return Purchases(purchases)

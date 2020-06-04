@@ -61,16 +61,16 @@ def response_to_user(message):
 @bot.callback_query_handler(lambda query: True)
 def delete_button_from_list(query):
     chat_id = query.message.chat.id
+    purchases = None
     try:
-        purchase = users_purchases_data[chat_id]
-        inline_keyboard = purchase.edit_purchase(query, chat_id)
-    except (KeyError, AttributeError):
-        bot_logger.exception('exception is caught, the bot cannot edit the list after reconnecting, user – {}'.format(query.message.from_user.username))
-        bot.send_message(chat_id, 'Я не могу отредактировать список после переподключения')
-
+        purchases = users_purchases_data[chat_id]
+    except KeyError:
+        purchases = shoper.get_purchases(chat_id)
+        users_purchases_data[chat_id] = purchases
+    inline_keyboard = purchases.edit_purchase(query, chat_id)
     # Если список пустой – удаляем список
     if not inline_keyboard.keyboard:
-        purchase.delete_purchase(bot, chat_id, query)
+        purchases.delete_purchase(bot, chat_id, query)
     # Если не пустой, обновляем сообщение с ним
     else:
         bot.edit_message_reply_markup(chat_id, query.message.message_id,

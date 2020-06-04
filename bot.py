@@ -65,6 +65,7 @@ def delete_button_from_list(query):
     try:
         purchases = users_purchases_data[chat_id]
     except KeyError:
+        bot_logger.error('restore list after reconnecting, user – {}'.format(query.message.from_user.username))
         purchases = shoper.get_purchases(chat_id)
         users_purchases_data[chat_id] = purchases
     inline_keyboard = purchases.edit_purchase(query, chat_id)

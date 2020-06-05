@@ -42,7 +42,7 @@ def get_timedelta(datetime_reminder):
 def set_reminder(string_datetime_reminder, purchases, bot, chat_id):
     def remind(delay=False):
         inline_keyboard = purchases.create_inline_keyboard()
-        bot.send_message(chat_id, 'Напоминаю, что нужно купить',
+        bot.send_message(chat_id, 'Напоминаю про список',
                          reply_markup=inline_keyboard)
 
         connection, cursor = db_request.connect()

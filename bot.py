@@ -20,8 +20,8 @@ users_purchases_data = {}
 def say_hello(message):
     about_me = '''Привет, {}.
 Я помогаю со списками покупок или дел.
-Чтобы создать список, попроси меня об этом и перечисли что нужно купить или сделать через запятую
-Например вот так: что-то, ещё что-то, и еще что-то'''.format(message.from_user.first_name)
+Чтобы создать список, попроси меня об этом и перечисли, что нужно купить или сделать через запятую.
+Например вот так: что-то, ещё что-то, и ещё что-то'''.format(message.from_user.first_name)
     bot.send_message(message.chat.id, about_me)
 
 
@@ -29,11 +29,11 @@ def say_hello(message):
 def response_to_user(message):
     response = df.request_to_dialogflow(df.collect_request(message.text))
     if df.action(response) == 'set_purchase_list':
-        goods = df.parameters(response)['purchase_list']
-        user_purchases = shoper.Purchases(purchases=goods)
-        user_purchases.save_purchase(message.chat.id)
-        users_purchases_data[message.chat.id] = user_purchases
-        keyboard = user_purchases.create_inline_keyboard()
+        item_list = df.parameters(response)['purchase_list']
+        user_item_list = shoper.Purchases(purchases=item_list)
+        user_item_list.save_purchase(message.chat.id)
+        users_purchases_data[message.chat.id] = user_item_list
+        keyboard = user_item_list.create_inline_keyboard()
         bot.send_message(message.chat.id, f'{df.response_ai(response)}', reply_markup=keyboard)
     elif df.action(response) == 'purchase_reminder':
         datetime_remind_from_ai = df.parameters(response)
@@ -69,10 +69,8 @@ def delete_button_from_list(query):
         purchases = shoper.get_purchases(chat_id)
         users_purchases_data[chat_id] = purchases
     inline_keyboard = purchases.edit_purchase(query, chat_id)
-    # Если список пустой – удаляем список
     if not inline_keyboard.keyboard:
         purchases.delete_purchase(bot, chat_id, query)
-    # Если не пустой, обновляем сообщение с ним
     else:
         bot.edit_message_reply_markup(chat_id, query.message.message_id,
                                       reply_markup=inline_keyboard)

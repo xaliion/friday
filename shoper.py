@@ -1,12 +1,10 @@
 import db_request
 from telebot import types
-import reminder
 
 
 class Purchases():
-    def __init__(self, purchases, data_remind=None):
+    def __init__(self, purchases):
         self.purchases = self.__make_firstletter_capital(purchases, return_type='string')
-        self.remind = data_remind
     
     def __purchase_to_list(self, purchase_string):
         purchase_list = purchase_string.split(', ')
@@ -36,15 +34,13 @@ class Purchases():
         self.purchases = db_request.read_purchase(chat_id)
         purchase_list = self.__purchase_to_list(self.purchases)
         inline_keyboard = self.create_inline_keyboard()
-
         # Удаляем кнопку
-        for button in inline_keyboard.keyboard:
-            if button[0]['callback_data'] == query.data:
+        for index, button in enumerate(inline_keyboard.keyboard):
+            if button[0].callback_data == query.data:
                 # Удаляем из клавиатуры
-                button_index = inline_keyboard.keyboard.index(button)
-                del inline_keyboard.keyboard[button_index]
+                del inline_keyboard.keyboard[index]
                 # Удаляем из списка
-                purchase_list.remove(button[0]['text'])
+                purchase_list.remove(button[0].text)
                 # Обновляем список в базе
                 self.purchases = self.__purchase_to_string(purchase_list)
                 db_request.update_purchase(self.purchases, chat_id)
@@ -56,17 +52,6 @@ class Purchases():
 
     def save_purchase(self, chat_id):
         db_request.write_purchase(self.purchases, chat_id)
-    
-    def create_reminder(self, datetime_remind_from_ai, chat_id):
-        datetime_reminder = reminder.get_datetime_reminder(datetime_remind_from_ai['time'],
-                                                           datetime_remind_from_ai['date'])
-        reminder.write_data_reminder(datetime_reminder, chat_id)
-        return datetime_reminder
-
-    def set_reminder(self, datetime_reminder, bot, chat_id):
-        reminder.set_reminder(datetime_reminder, self, bot, chat_id)
-        message_to_recap = reminder.get_message_time_reminder(datetime_reminder)
-        return message_to_recap
 
 
 def get_purchases(chat_id):

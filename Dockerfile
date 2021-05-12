@@ -2,13 +2,13 @@
 FROM python:stretch
 
 # Создаём директорию бота
-RUN mkdir /shoper_bot
+RUN mkdir /friday
 
 # Копируем все файлы из текущей директории в директорию бота
-COPY . /shoper_bot
+COPY . /friday
 
 # Устанавливаем рабочую директорию
-WORKDIR /shoper_bot
+WORKDIR /friday
 
 # Устанавливаем pytelegrambotapi и apiai
 RUN pip3 install --no-cache-dir pytelegrambotapi

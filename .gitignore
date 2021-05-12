@@ -1,8 +1,9 @@
 # Ignore __pycache__ directory and all include
 __pycache__/
 
-# Ignore all files .log
+# Ignore all files .log, .db
 *.log
+*.db
 
 # Ignore DS_Store file
 .DS_Store

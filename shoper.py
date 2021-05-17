@@ -57,6 +57,6 @@ class Purchases():
         db_request.write(self.purchases, chat_id)
 
 
-def get_purchases(chat_id):
+def get_rebuilt_purchases(chat_id):
     purchases = db_request.read(chat_id)
     return Purchases(purchases)

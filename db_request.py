@@ -8,10 +8,11 @@ def connect():
 
 
 def write_purchase(purchases, chat_id):
-        connection, cursor = connect()
-        sql_request = 'INSERT INTO purchase (purchase_list, id) VALUES (?, ?);'
-        cursor.execute(sql_request, (purchases, chat_id))
-        connection.commit()
+    connection, cursor = connect()
+    sql_request = 'INSERT INTO purchase (purchase_list, id) VALUES (?, ?);'
+    cursor.execute(sql_request, (purchases, chat_id))
+    connection.commit()
+
 
 def read_purchase(chat_id):
     connection, cursor = connect()
@@ -19,11 +20,13 @@ def read_purchase(chat_id):
     cursor.execute(sql_request, (chat_id, ))
     return cursor.fetchall()[0][0]
 
+
 def update_purchase(purchases, chat_id):
     connection, cursor = connect()
     sql_request = 'UPDATE purchase SET purchase_list=? WHERE id=?;'
     cursor.execute(sql_request, (purchases, chat_id))
     connection.commit()
+
 
 def delete_purchase(chat_id):
     connection, cursor = connect()

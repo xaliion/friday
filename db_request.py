@@ -7,29 +7,29 @@ def connect():
     return (connection, cursor)
 
 
-def write_purchase(purchases, chat_id):
+def write(user_data, id_data):
     connection, cursor = connect()
     sql_request = 'INSERT INTO purchase (purchase_list, id) VALUES (?, ?);'
-    cursor.execute(sql_request, (purchases, chat_id))
+    cursor.execute(sql_request, (user_data, id_data))
     connection.commit()
 
 
-def read_purchase(chat_id):
+def read(id_data):
     connection, cursor = connect()
     sql_request = 'SELECT purchase_list FROM purchase WHERE id=?;'
-    cursor.execute(sql_request, (chat_id, ))
+    cursor.execute(sql_request, (id_data, ))
     return cursor.fetchall()[0][0]
 
 
-def update_purchase(purchases, chat_id):
+def update(user_data, id_data):
     connection, cursor = connect()
     sql_request = 'UPDATE purchase SET purchase_list=? WHERE id=?;'
-    cursor.execute(sql_request, (purchases, chat_id))
+    cursor.execute(sql_request, (user_data, id_data))
     connection.commit()
 
 
-def delete_purchase(chat_id):
+def delete(id_data):
     connection, cursor = connect()
     sql_request = 'DELETE FROM purchase WHERE id=?;'
-    cursor.execute(sql_request, (chat_id,))
+    cursor.execute(sql_request, (id_data,))
     connection.commit()

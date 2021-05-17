@@ -4,8 +4,8 @@ __pycache__/
 # Ignore all files .log
 *.log
 
-# Ignore all files .db
-*.db
+# Ignore friday.db
+friday.db
 
 # Ignore DS_Store file
 .DS_Store
